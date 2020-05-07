@@ -1,1 +1,0 @@
-{"name":"Maya","rank":"private","limitiations":["Korona","Weather"],"duties":"123456"}

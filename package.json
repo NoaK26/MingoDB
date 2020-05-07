@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "description": "MingoDB ====== Mingo DataBase",
   "scripts": {
-    "test": "mocha"
+    "test": "mocha ./test/findTest.js ./test/insertTest.js"
   },
   "repository": {
     "type": "git"

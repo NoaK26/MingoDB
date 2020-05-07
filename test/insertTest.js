@@ -1,59 +1,70 @@
-const db = require("../db")
-const assert = require('chai').assert
+var db = require('../db')
+var expect = require('chai').expect
 
-soldierObj = {
-    id: "1",
-    name: "Maya",
-    rank: "private", 
-    limitiations: ["Korona", "Weather"],
-    duties: "123456"
+var collectionName, path, soldierId
+var done = function(err, id) {id = soldierId}
+var soldierObj = {
+    id: 1,
+    name: "Noa",
+    rank: "corporal",
+    limitations: "none",
+    duties: "2"
+}
+var soldierObjWithNoId = {
+    name: "Noa",
+    rank: "corporal",
+    limitations: "none",
+    duties: "1"
 }
 
-soldierObjWithouId = {
-    name: "Maya",
-    rank: "private", 
-    limitiations: ["Korona", "Weather"],
-    duties: "123456"
-}
+describe('insertFunction', function() {
+    it("should create a file and insert it into a new collection",function() {
+        collectionName = "soldierCollection3"
+        path = "./collections/soldierCollection3/1.txt"
+        db.prototype.insert(collectionName, soldierObj, done)
+        expect(path).to.be.a.file()
+    })
 
-describe('insertFuncion', function() {
-    it('check if new collection creates', () => {
-        assert.equal(db.prototype.insert("firstSoldiersCollection", soldierObj, null), "EMPTY")
+    it("should create a file and insert it into an existing collection",function() {
+        collectionName = "soldierCollection3"
+        path = "./collections/soldierCollection3/1.txt"
+        db.prototype.insert(collectionName, soldierObj, done)
+        expect(path).to.be.a.file()
     })
     
-    it('check if old collection does not creates', () => {
-        assert.equal(db.prototype.insert("firstSoldiersCollection", soldierObj, null), "EMPTY")
+    it("should detect that the created file already exists and replace the old one",function() {
+        collectionName = "soldierCollection1"
+        path = "./collections/soldierCollection1/1.txt"
+        db.prototype.insert(collectionName, soldierObj, done)
+        expect(path).to.be.a.file().with.content(soldierObj)
     })
-    
-    it('create file in old collection', () => {
-        assert.equal(db.prototype.insert("firstSoldiersCollection", soldierObj, null), "EMPTY")
+
+    it("should generate new Id to a soldier object and create and insert a new file to new collection",function() {
+       collectionName = "soldiersCollection4"
+       db.prototype.insert(collectionName, soldierObjWithNoId, done)
+       path = `./collections/soldierCollection4/${soldierId}`
+       expect(path).to.be.a.file();
     })
-    
-    it('rewrite file in old collection', () => {
-        assert.equal(db.prototype.insert("firstSoldiersCollection", soldierObj, null), "EMPTY")
+
+    it("should generate new Id to a soldier object and create and insert a new file to an existing collection",function() {
+        collectionName = "soldiersCollection4"
+        db.prototype.insert(collectionName, soldierObjWithNoId, done)
+        path = `./collections/soldierCollection4/${soldierId}`
+        expect(path).to.be.a.file()
     })
-    
-    it('create file in new collection', () => {
-        assert.equal(db.prototype.insert("secondSoldiersCollection", soldierObj, null), "EMPTY")
+
+    it("should check if the generator does not generate the same id twice", function() {
+        collectionName = "soldiersCollection4"
+        db.prototype.insert(collectionName, soldierObjWithNoId, done)
+        let firstId = soldierId
+        db.prototype.insert(collectionName, soldierObjWithNoId, done)
+        expect(firstId).not.toEqual(soldierId)
     })
-    
-    it('rewrite file in new collection', () => {
-        assert.equal(db.prototype.insert("thirdSoldiersCollection", soldierObj, null), "EMPTY")
-    })
-    
-    it('create file in old collection without given a id', () => {
-        assert.equal(db.prototype.insert("secondSoldiersCollection", soldierObjWithouId, null), "EMPTY")
-    })
-    
-    it('rewrite file in old collection without given a id', () => {
-        assert.equal(db.prototype.insert("thirdSoldiersCollection", soldierObjWithouId, null), "EMPTY")
-    })
-    
-    it('create file in new collection without given a id', () => {
-        assert.equal(db.prototype.insert("fourthSoldiersCollection", soldierObjWithouId, null), "EMPTY")
-    })
-    
-    it('rewrite file in new collection without given a id', () => {
-        assert.equal(db.prototype.insert("fourthSoldiersCollection", soldierObjWithouId, null), "EMPTY")
+
+    it("should check if a json file has been created and named after the id property in the json object", function() {
+        collectionName = "soldierCollection5"
+        path = "./collections/soldierCollection5"
+        db.prototype.insert(collectionName, soldierObj, done)
+        expect(path).to.be.a.directory().with.files(`${soldierObj.id}.json`)
     })
 })
