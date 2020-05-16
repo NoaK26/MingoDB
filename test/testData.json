@@ -1,0 +1,16 @@
+{
+    "soldierObj": {
+        "id": 1,
+        "name": "Noa",
+        "rank": "corporal",
+        "limitations": "none",
+        "duties": "2"
+    },
+
+    "soldierObjWithNoId": {
+        "name": "Noa",
+        "rank": "corporal",
+        "limitations": "none",
+        "duties": "1"
+    }
+}
